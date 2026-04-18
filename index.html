@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="eduspark A digital learning system that creates personalized career-focused learning roadmaps with AI mentoring, skill assessments, and progress tracking." />
+  <title>eduspark — Your Personalized Learning Journey</title>
+  <link rel="icon" href="images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/premium.css" />
+  <style>
+    /* Splash Screen Styles */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .splash-content {
+      text-align: center;
+      animation: splashPop 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .splash-logo {
+      font-size: 5.5rem;
+      font-weight: 800;
+      letter-spacing: -4px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* Center horizontally */
+    }
+
+    .splash-logo .splash-letter {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: letterAppear 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .splash-logo .e-letter {
+      color: #000000;
+      margin-right: -2px;
+    }
+
+    .splash-logo .rest-letter {
+      color: #ffffff;
+    }
+
+    @keyframes letterAppear {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .splash-tagline {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.1rem;
+      margin-top: 15px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 0.8s;
+    }
+
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin: 40px auto 0;
+      /* Centered with top margin */
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 1s;
+    }
+
+    .loader-progress {
+      width: 0%;
+      height: 100%;
+      background: white;
+      animation: loading 2.5s ease-in-out forwards 1s;
+    }
+
+    @keyframes splashPop {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes loading {
+      0% {
+        width: 0%;
+      }
+
+      100% {
+        width: 100%;
+      }
+    }
+
+    .splash-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ========== SPLASH SCREEN ========== -->
+  <div id="splash-screen">
+    <div class="splash-content">
+      <h1 class="splash-logo">
+        <span class="splash-letter e-letter" style="animation-delay: 0.1s;">E</span>
+        <span class="splash-letter rest-letter" style="animation-delay: 0.2s;">d</span>
+        <span class="splash-letter rest-letter" style="animation-delay: 0.3s;">u</span>
+        <span class="splash-letter rest-letter" style="animation-delay: 0.4s;">s</span>
+        <span class="splash-letter rest-letter" style="animation-delay: 0.5s;">p</span>
+        <span class="splash-letter rest-letter" style="animation-delay: 0.6s;">a</span>
+        <span class="splash-letter rest-letter" style="animation-delay: 0.7s;">r</span>
+        <span class="splash-letter rest-letter" style="animation-delay: 0.8s;">k</span>
+      </h1>
+      <p class="splash-tagline">Igniting Your Learning Journey</p>
+      <div class="loader-bar">
+        <div class="loader-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Splash screen logic
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        splash.classList.add('splash-hidden');
+      }, 3500); // 3.5 seconds for a premium feel
+    });
+  </script>
+
+  <!-- ========== LOGIN PAGE ========== -->
+  <div id="loginPage" class="login-page hidden">
+    <div class="login-container">
+      <img src="images/logo.png" alt="EduSpark Logo"
+        style="height: 60px; width: auto; margin: 0 auto 20px; display: block;" />
+      <h1>Welcome back!</h1>
+      <p>Your personal career-focused learning companion. Sign in to start your journey.</p>
+      <form class="login-form" id="loginForm">
+        <div class="form-group">
+          <label for="loginName">Full Name</label>
+          <input type="text" id="loginName" placeholder="e.g. pratibha" required />
+        </div>
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="pratibha@example.com" required />
+        </div>
+        <button type="submit" class="btn-primary" id="loginBtn">Get Started</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== APP SHELL (hidden until login) ========== -->
+  <div id="appShell" class="hidden">
+
+    <!-- Top Navigation -->
+    <nav class="top-nav" id="topNav">
+      <div class="nav-brand" style="margin-top: 4px;">
+        <img src="images/logo.png" alt="EduSpark" style="height: 52px; width: auto;" />
+      </div> <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">☰</button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#" data-page="home" class="active" id="nav-home" data-i18n="nav_home"><i data-lucide="home"
+              style="width: 16px; margin-right: 6px;"></i> Home</a></li>
+        <li><a href="#" data-page="path" id="nav-path" data-i18n="nav_path"><i data-lucide="map"
+              style="width: 16px; margin-right: 6px;"></i> My Path</a></li>
+        <li><a href="#" data-page="assessments" id="nav-assessments" data-i18n="nav_assessments"><i
+              data-lucide="clipboard-list" style="width: 16px; margin-right: 6px;"></i> Assessments</a></li>
+        <li><a href="#" data-page="dashboard" id="nav-dashboard" data-i18n="nav_dashboard"><i data-lucide="bar-chart-2"
+              style="width: 16px; margin-right: 6px;"></i> Dashboard</a></li>
+        <li><a href="#" data-page="career" id="nav-career" data-i18n="nav_career"><i data-lucide="lightbulb"
+              style="width: 16px; margin-right: 6px;"></i> Career Ideas</a></li>
+      </ul>
+
+      <div class="nav-user">
+        <div class="custom-lang-search">
+          <input type="text" id="langSearchInput" placeholder="Search language..." autocomplete="off" />
+          <div class="lang-dropdown" id="langDropdown"></div>
+        </div>
+        <div id="google_translate_element" style="display: none;"></div>
+        <div class="nav-user-avatar" id="userAvatar">R</div>
+        <span class="nav-user-name" id="userName">Riya</span>
+        <button class="nav-logout" id="logoutBtn" data-i18n="logout">Log out</button>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- ===== HOME PAGE ===== -->
+      <section id="page-home" class="page-section active">
+        <div class="welcome-banner">
+          <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 15px;">
+            <img src="images/logo.png" alt="EduSpark" style="height: 80px; width: auto; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));" />
+            <div>
+              <h2 id="welcomeMsg" style="margin: 0;">Good afternoon, Riya!</h2>
+              <p style="margin: 5px 0 0;">You're doing great. Here's a quick look at your progress and what's next on your learning path.</p>
+            </div>
+          </div>
+          <button class="btn-primary" style="width: auto; margin-top: 5px;" onclick="navigateTo('path')">Start today's
+            path</button>
+        </div>
+
+        <div class="motivation-bar" id="motivationBar">
+          <span class="icon"><i data-lucide="zap" style="width:16px;"></i></span>
+          <span>You've studied 3 days in a row — keep going! Consistency is the key to mastery.</span>
+        </div>
+
+        <div class="quick-actions">
+          <div class="quick-action-card" onclick="navigateTo('path')">
+            <div class="icon"><i data-lucide="map"></i></div>
+            <h4>Start today's path</h4>
+            <p>Continue your weekly roadmap</p>
+          </div>
+          <div class="quick-action-card" onclick="toggleChat()">
+            <div class="icon"><i data-lucide="message-square"></i></div>
+            <h4>Ask your mentor</h4>
+            <p>Get instant help from AI</p>
+          </div>
+          <div class="quick-action-card" onclick="navigateTo('assessments')">
+            <div class="icon"><i data-lucide="clipboard-check"></i></div>
+            <h4>Check weakness</h4>
+            <p>Take a skill assessment</p>
+          </div>
+        </div>
+
+        <div class="home-grid">
+          <div class="card">
+            <div class="card-title"><i data-lucide="line-chart"
+                style="width: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i> Progress
+              Snapshot</div>
+            <div class="card-subtitle">This week's overview</div>
+            <div class="dashboard-stats home-stats">
+              <div class="stat-card" style="border:none; padding:12px;">
+                <div class="stat-value" id="homeLessons">12/40</div>
+                <div class="stat-label">Lessons Done</div>
+              </div>
+              <div class="stat-card" style="border:none; padding:12px;">
+                <div class="stat-value" id="homeScore">70%</div>
+                <div class="stat-label">Avg Score</div>
+              </div>
+              <div class="stat-card" style="border:none; padding:12px;">
+                <div class="stat-value" id="homeStreak">5</div>
+                <div class="stat-label">Day Streak</div>
+              </div>
+              <div class="stat-card" style="border:none; padding:12px;">
+                <div class="stat-value" style="color:var(--accent);">+15%</div>
+                <div class="stat-label">Python Growth</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i data-lucide="clock"
+                style="width: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i> Recent
+              Activity</div>
+            <div class="card-subtitle">What's happening on eduspark</div>
+            <ul class="activity-feed">
+              <li class="activity-item">
+                <span class="activity-dot green"></span>
+                <div>
+                  <div class="activity-text">pratibha finished the <strong>HTML Module</strong> yesterday</div>
+                  <div class="activity-time">1 day ago</div>
+                </div>
+              </li>
+              <li class="activity-item">
+                <span class="activity-dot blue"></span>
+                <div>
+                  <div class="activity-text">You scored <strong>85%</strong> on the CSS Quiz</div>
+                  <div class="activity-time">2 days ago</div>
+                </div>
+              </li>
+              <li class="activity-item">
+                <span class="activity-dot yellow"></span>
+                <div>
+                  <div class="activity-text">New career insight: <strong>React.js</strong> demand is rising</div>
+                  <div class="activity-time">3 days ago</div>
+                </div>
+              </li>
+              <li class="activity-item">
+                <span class="activity-dot green"></span>
+                <div>
+                  <div class="activity-text">Arjun completed the <strong>Python Basics</strong> path</div>
+                  <div class="activity-time">3 days ago</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== LEARNING PATH PAGE ===== -->
+      <section id="page-path" class="page-section">
+        <div class="section-header">
+          <h2>My eduspark</h2>
+          <p>Set your career goal and follow a personalized weekly roadmap.</p>
+        </div>
+
+        <!-- Goal Setup -->
+        <div id="goalSetup" class="goal-setup-card">
+          <h3>Set Your Goal</h3>
+          <p>Choose the career direction you want to pursue. We'll build a roadmap just for you.</p>
+
+          <div class="goal-options" id="goalOptions">
+            <div class="goal-option" data-goal="webdev" onclick="selectGoal(this)">
+              <div class="icon"><i data-lucide="monitor" style="width: 32px; height: 32px;"></i></div>
+              <h4>Web Development</h4>
+              <p>HTML, CSS, JS, React</p>
+            </div>
+            <div class="goal-option" data-goal="datascience" onclick="selectGoal(this)">
+              <div class="icon"><i data-lucide="database" style="width: 32px; height: 32px;"></i></div>
+              <h4>Data Science</h4>
+              <p>Python, Pandas, ML basics</p>
+            </div>
+            <div class="goal-option" data-goal="aiml" onclick="selectGoal(this)">
+              <div class="icon"><i data-lucide="brain" style="width: 32px; height: 32px;"></i></div>
+              <h4>AI / ML</h4>
+              <p>Neural nets, TensorFlow, NLP</p>
+            </div>
+            <div class="goal-option" data-goal="iot" onclick="selectGoal(this)">
+              <div class="icon"><i data-lucide="wifi" style="width: 32px; height: 32px;"></i></div>
+              <h4>IoT</h4>
+              <p>Sensors, ESP32, MQTT</p>
+            </div>
+            <div class="goal-option" data-goal="vlsi" onclick="selectGoal(this)">
+              <div class="icon"><i data-lucide="microchip" style="width: 32px; height: 32px;"></i></div>
+              <h4>VLSI</h4>
+              <p>Verilog, FPGA, RTL Design</p>
+            </div>
+            <div class="goal-option" data-goal="embedded" onclick="selectGoal(this)">
+              <div class="icon"><i data-lucide="circuit-board" style="width: 32px; height: 32px;"></i></div>
+              <h4>Embedded Systems</h4>
+              <p>C, Microcontrollers, RTOS</p>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <select id="skillLevel">
+              <option value="" disabled selected>Select Your Current Level</option>
+              <option value="novice">Novice (Zero Experience)</option>
+              <option value="beginner">Beginner (Some Basics)</option>
+              <option value="intermediate">Intermediate (Can Code)</option>
+              <option value="advanced">Advanced (Building Projects)</option>
+              <option value="expert">Expert (Job Ready Polish)</option>
+            </select>
+            <select id="hoursPerWeek">
+              <option value="" disabled selected>Hours/Week</option>
+              <option value="5">~5 hours/week</option>
+              <option value="10">~10 hours/week</option>
+              <option value="15">~15 hours/week</option>
+              <option value="20">20+ hours/week</option>
+            </select>
+          </div>
+
+          <button class="btn-primary" style="width:auto;" onclick="generateRoadmap()" id="generateRoadmapBtn">Generate
+            My Roadmap →</button>
+        </div>
+
+        <!-- Roadmap (hidden until generated) -->
+        <div id="roadmapSection" class="hidden">
+          <div class="flex justify-between items-center mb-16">
+            <div>
+              <h3 id="roadmapTitle" style="font-size:1.1rem; font-weight:600;">Your Web Development Roadmap</h3>
+              <p class="text-muted text-small" id="roadmapSubtitle">Beginner · ~10 hrs/week · 8-week plan</p>
+            </div>
+            <button class="btn-secondary btn-sm" onclick="resetGoal()">Change Goal</button>
+          </div>
+          <div class="roadmap-container" id="roadmapContainer">
+            <!-- Weeks rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ASSESSMENTS PAGE ===== -->
+      <section id="page-assessments" class="page-section">
+        <div class="section-header">
+          <h2>Smart Skill Assessment</h2>
+          <p>Test your knowledge to find your strengths and areas for improvement.</p>
+        </div>
+
+        <div class="assessment-header-actions"
+          style="margin-bottom: 24px; display: flex; align-items: center; gap: 12px; background: var(--surface); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border-light);">
+          <label for="assessmentTopic" style="font-weight: 600; font-size: 0.9rem; color: var(--text);">Select
+            Assessment Topic:</label>
+          <select id="assessmentTopic" onchange="changeAssessmentTopic()"
+            style="width: auto; flex: 1; max-width: 300px;">
+            <option value="webdev">Web Development</option>
+            <option value="datascience">Data Science</option>
+            <option value="aiml">AI / Machine Learning</option>
+            <option value="iot">IoT Engineering</option>
+            <option value="vlsi">VLSI Design</option>
+            <option value="embedded">Embedded Systems</option>
+          </select>
+        </div>
+
+        <div class="assessment-tabs" id="assessmentTabs">
+          <button class="assessment-tab active" data-tab="quiz" onclick="switchAssessmentTab('quiz')">Quiz</button>
+          <button class="assessment-tab" data-tab="coding" onclick="switchAssessmentTab('coding')">Coding Challenge</button>
+          <button class="assessment-tab" data-tab="aptitude" onclick="switchAssessmentTab('aptitude')">Aptitude</button>
+          <button class="assessment-tab" data-tab="mock" onclick="switchAssessmentTab('mock')">Mock Interview</button>
+          <button class="assessment-tab" data-tab="certificate" onclick="switchAssessmentTab('certificate')">Certificate</button>
+        </div>
+
+        <!-- AI Quiz Agent Tab -->
+        <div id="tab-quiz" class="assessment-content active">
+          <div class="ai-quiz-wrapper">
+            <div id="aiQuizChat" class="ai-chat-box">
+              <div class="ai-chat-welcome">
+                <div class="ai-avatar-large"><i data-lucide="bot" style="width: 48px; height: 48px; color: var(--primary);"></i></div>
+                <h3>Welcome to your friendly AI Assessment!</h3>
+                <p>Instead of a boring multiple-choice form, I'll ask you 10 questions to understand your skills better. Don't worry, I'm here to motivate you! Ready to start?</p>
+                <button class="btn-primary" onclick="startAIQuiz()" id="startQuizBtn">Let's Begin!</button>
+              </div>
+            </div>
+          </div>
+          
+          <div id="quizResults" class="hidden results-panel mt-20">
+            <!-- Results rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Mock Interview Tab -->
+        <div id="tab-mock" class="assessment-content">
+          <div class="ai-quiz-wrapper">
+            <div id="mockInterviewChat" class="ai-chat-box">
+              <div class="ai-chat-welcome">
+                <div class="ai-avatar-large"><i data-lucide="mic" style="width: 48px; height: 48px; color: var(--primary);"></i></div>
+                <h3>EduSpark Mock Interview</h3>
+                <p>Hello! I'm your personal interview coach. I'll help you practice your communication and self-introduction. We'll use your <b>voice</b> for this session!</p>
+                <div class="voice-controls mb-20">
+                  <p class="text-small text-muted mb-8">Make sure your microphone is ready.</p>
+                  <button class="btn-primary" onclick="startMockInterview()" id="startMockBtn">Start Voice Interview</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coding Tab -->
+        <div id="tab-coding" class="assessment-content">
+          <div class="card mb-16">
+            <div class="card-title"><i data-lucide="code-2"
+                style="width: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i> Coding
+              Challenge</div>
+            <div class="card-subtitle" id="codingChallengeSubtitle">Write a JavaScript function that reverses a given
+              string.</div>
+            <div class="code-editor">
+              <div class="code-editor-header">
+                <span class="code-dot red"></span>
+                <span class="code-dot yellow"></span>
+                <span class="code-dot green"></span>
+              </div>
+              <textarea id="codeInput"
+                placeholder="function reverseString(str) {&#10;  // Write your solution here&#10;  &#10;}">function reverseString(str) {
+  // Write your solution here
+  
+}</textarea>
+            </div>
+            <button class="btn-accent" onclick="checkCode()" id="checkCodeBtn">Check Answer</button>
+          </div>
+          <div id="codingResults" class="hidden results-panel">
+            <!-- Results rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Aptitude Tab -->
+        <div id="tab-aptitude" class="assessment-content">
+          <div id="aptitudeContainer">
+            <!-- Questions rendered by JS -->
+          </div>
+          <button class="btn-primary" style="width:auto; margin-top:16px;" onclick="submitAptitude()"
+            id="submitAptitudeBtn">Submit Answers</button>
+          <div id="aptitudeResults" class="hidden results-panel mt-20">
+            <!-- Results rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Certificate Tab -->
+        <div id="tab-certificate" class="assessment-content">
+          <div id="certificateStatus" class="certificate-status-card">
+            <div class="icon"><i data-lucide="award" style="width: 48px; height: 48px; color: var(--primary);"></i></div>
+            <h3>Your Professional Certificate</h3>
+            <p>Complete all four assessment modules (Quiz, Coding, Aptitude, and Interview) to unlock your Eduspark Certification.</p>
+            <div class="completion-grid" id="certCompletionGrid">
+              <!-- Grid filled by JS -->
+            </div>
+            <button class="btn-primary mt-24" id="generateCertBtn" disabled onclick="checkAndAllowCertificate()">Unlock My Certificate</button>
+          </div>
+
+          <div id="certificateWrapper" class="hidden">
+            <div class="certificate-container" id="printableCertificate">
+              <!-- Dynamic Certificate Content -->
+            </div>
+            <div class="flex justify-center mt-24 gap-16">
+              <button class="btn-primary" onclick="downloadCertificate()">Download Certificate</button>
+              <button class="btn-secondary" onclick="shareCertificate()">Share Certificate</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DASHBOARD PAGE ===== -->
+      <section id="page-dashboard" class="page-section">
+        <div class="section-header">
+          <h2>Progress Dashboard</h2>
+          <p>Track your growth, scores, and milestones in real-time.</p>
+        </div>
+
+        <div class="dashboard-stats" id="dashboardStats">
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="book-open" style="width: 24px; height: 24px;"></i></div>
+            <div class="progress-ring-container">
+              <div class="progress-ring" id="lessonsRing">
+                <svg width="80" height="80">
+                  <circle class="ring-bg" cx="40" cy="40" r="34"></circle>
+                  <circle class="ring-fill" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="149.5">
+                  </circle>
+                </svg>
+                <span class="ring-text">30%</span>
+              </div>
+            </div>
+            <div class="stat-label">Lessons Completed</div>
+            <div class="stat-value" style="font-size:1.1rem;">12 / 40</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="target" style="width: 24px; height: 24px;"></i></div>
+            <div class="progress-ring-container">
+              <div class="progress-ring" id="scoreRing">
+                <svg width="80" height="80">
+                  <circle class="ring-bg" cx="40" cy="40" r="34"></circle>
+                  <circle class="ring-fill" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="64.1"
+                    style="stroke:var(--accent);"></circle>
+                </svg>
+                <span class="ring-text">70%</span>
+              </div>
+            </div>
+            <div class="stat-label">Avg Test Score</div>
+            <div class="stat-trend up">↑ 5% from last week</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="flame" style="width: 24px; height: 24px;"></i></div>
+            <div class="stat-value" style="font-size:2rem; margin-top:16px;">5</div>
+            <div class="stat-label">Day Streak</div>
+            <div class="streak-display">
+              <span class="streak-day active">M</span>
+              <span class="streak-day active">T</span>
+              <span class="streak-day active">W</span>
+              <span class="streak-day active">T</span>
+              <span class="streak-day active">F</span>
+              <span class="streak-day inactive">S</span>
+              <span class="streak-day inactive">S</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="award" style="width: 24px; height: 24px;"></i></div>
+            <div class="stat-value" id="milestonesValue" style="font-size:2rem; margin-top:16px;">0</div>
+            <div class="stat-label">Milestones Reached</div>
+            <div class="stat-trend up" id="nextMilestone">Next: Complete tasks to earn!</div>
+          </div>
+        </div>
+
+        <div class="card mb-32">
+          <div class="card-title"><i data-lucide="trophy"
+              style="width: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i> Recent
+            Achievements</div>
+          <div class="card-subtitle">Badges earned through performance</div>
+          <div id="achievementList" class="flex flex-col gap-12 mt-12">
+            <!-- Achievements rendered by JS -->
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title"><i data-lucide="trending-up"
+                style="width: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i> Skill
+              Improvements</div>
+            <div class="card-subtitle">Your growth over the past 4 weeks</div>
+            <div class="bar-chart" id="skillChart">
+              <div class="bar-item">
+                <div class="bar primary" style="height:60%;"></div>
+                <span class="bar-label">HTML</span>
+              </div>
+              <div class="bar-item">
+                <div class="bar accent" style="height:45%;"></div>
+                <span class="bar-label">CSS</span>
+              </div>
+              <div class="bar-item">
+                <div class="bar primary" style="height:75%;"></div>
+                <span class="bar-label">Python</span>
+              </div>
+              <div class="bar-item">
+                <div class="bar warning" style="height:30%;"></div>
+                <span class="bar-label">SQL</span>
+              </div>
+              <div class="bar-item">
+                <div class="bar accent" style="height:55%;"></div>
+                <span class="bar-label">JS</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i data-lucide="alert-triangle"
+                style="width: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i> Weak Topics
+            </div>
+            <div class="card-subtitle">Areas that need more practice</div>
+            <div>
+              <div class="weak-topic">
+                <span><i data-lucide="x-circle"
+                    style="color: var(--danger); width: 16px; margin-right: 8px;"></i></span>
+                <span class="weak-topic-name">Recursion</span>
+                <span class="weak-topic-level needs-work">Needs work</span>
+              </div>
+              <div class="weak-topic">
+                <span><i data-lucide="x-circle"
+                    style="color: var(--danger); width: 16px; margin-right: 8px;"></i></span>
+                <span class="weak-topic-name">SQL Joins</span>
+                <span class="weak-topic-level needs-work">Needs work</span>
+              </div>
+              <div class="weak-topic">
+                <span><i data-lucide="clock-3"
+                    style="color: var(--warning); width: 16px; margin-right: 8px;"></i></span>
+                <span class="weak-topic-name">CSS Flexbox</span>
+                <span class="weak-topic-level improving">Improving</span>
+              </div>
+              <div class="weak-topic">
+                <span><i data-lucide="clock-3"
+                    style="color: var(--warning); width: 16px; margin-right: 8px;"></i></span>
+                <span class="weak-topic-name">Array Methods</span>
+                <span class="weak-topic-level improving">Improving</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2 mt-24">
+          <div class="card">
+            <div class="card-title"><i data-lucide="calendar"
+                style="width: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i> Upcoming
+              Tasks</div>
+            <div class="card-subtitle">What's next on your learning agenda</div>
+            <div>
+              <div class="upcoming-task">
+                <div class="task-day">
+                  <span>Today</span>
+                  <span>4</span>
+                </div>
+                <div class="upcoming-task-info">
+                  <h4>Complete CSS Grid lesson</h4>
+                  <p>Module 3 — Web Development Path</p>
+                </div>
+              </div>
+              <div class="upcoming-task">
+                <div class="task-day">
+                  <span>Sat</span>
+                  <span>5</span>
+                </div>
+                <div class="upcoming-task-info">
+                  <h4>JavaScript Variables Quiz</h4>
+                  <p>Assessment — 15 questions</p>
+                </div>
+              </div>
+              <div class="upcoming-task">
+                <div class="task-day">
+                  <span>Mon</span>
+                  <span>7</span>
+                </div>
+                <div class="upcoming-task-info">
+                  <h4>Build a responsive landing page</h4>
+                  <p>Mini Project — Practice task</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i data-lucide="award" style="width: 20px; display: inline-block; vertical-align: middle; margin-right: 8px;"></i> Achievements</div>
+            <div class="card-subtitle">Milestones you've unlocked</div>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+              <div
+                style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--bg); border-radius:8px;">
+                <span style="font-size:1.4rem; color: var(--accent);"><i data-lucide="star"></i></span>
+                <div>
+                  <div style="font-size:0.88rem; font-weight:600;">First Steps</div>
+                  <div style="font-size:0.75rem; color:var(--text-secondary);">Completed your first lesson</div>
+                </div>
+              </div>
+              <div
+                style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--bg); border-radius:8px;">
+                <span style="font-size:1.4rem; color: var(--danger);"><i data-lucide="flame"></i></span>
+                <div>
+                  <div style="font-size:0.88rem; font-weight:600;">5-Day Streak</div>
+                  <div style="font-size:0.75rem; color:var(--text-secondary);">Studied 5 days in a row</div>
+                </div>
+              </div>
+              <div
+                style="display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--bg); border-radius:8px;">
+                <span style="font-size:1.4rem; color: var(--primary);"><i data-lucide="target"></i></span>
+                <div>
+                  <div style="font-size:0.88rem; font-weight:600;">Quiz Master</div>
+                  <div style="font-size:0.75rem; color:var(--text-secondary);">Scored 80%+ on 3 quizzes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CAREER PAGE ===== -->
+      <section id="page-career" class="page-section">
+        <div class="section-header">
+          <h2>Career Recommendations</h2>
+          <p>Discover career paths, courses, and projects tailored to your skills and market demand.</p>
+        </div>
+
+        <div class="career-grid" id="careerPaths">
+          <div class="career-path-card">
+            <div class="demand-badge"><i data-lucide="trending-up" style="width: 14px; margin-right: 4px;"></i> High
+              demand in 2025</div>
+            <h3>Frontend Developer</h3>
+            <p>Build beautiful, interactive user interfaces for web applications. Companies are constantly looking for
+              skilled frontend developers with React/Vue experience.</p>
+            <div class="career-skills">
+              <span class="skill-tag">HTML/CSS</span>
+              <span class="skill-tag">JavaScript</span>
+              <span class="skill-tag">React.js</span>
+              <span class="skill-tag">TypeScript</span>
+              <span class="skill-tag">Git</span>
+            </div>
+          </div>
+          <div class="career-path-card">
+            <div class="demand-badge"><i data-lucide="trending-up" style="width: 14px; margin-right: 4px;"></i> High
+              demand in 2025</div>
+            <h3>ML Engineer</h3>
+            <p>Design and deploy machine learning models that power intelligent systems. One of the fastest-growing
+              roles in the tech industry.</p>
+            <div class="career-skills">
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">TensorFlow</span>
+              <span class="skill-tag">Scikit-learn</span>
+              <span class="skill-tag">SQL</span>
+              <span class="skill-tag">Statistics</span>
+            </div>
+          </div>
+          <div class="career-path-card">
+            <div class="demand-badge"><i data-lucide="trending-up" style="width: 14px; margin-right: 4px;"></i> Growing
+              Sector 2025</div>
+            <h3>IoT Engineer</h3>
+            <p>Architect end-to-end IoT solutions involving sensors, connectivity, and cloud integration for smart homes
+              and industrial automation.</p>
+            <div class="career-skills">
+              <span class="skill-tag">ESP32/Arduino</span>
+              <span class="skill-tag">MQTT/HTTP</span>
+              <span class="skill-tag">Sensors</span>
+              <span class="skill-tag">Cloud Integration</span>
+            </div>
+          </div>
+          <div class="career-path-card">
+            <div class="demand-badge"><i data-lucide="trending-up" style="width: 14px; margin-right: 4px;"></i> High
+              Demand</div>
+            <h3>VLSI Design Engineer</h3>
+            <p>Specialize in the fabrication and design of integrated circuits (ICs) and microchips, using hardware
+              description languages like Verilog.</p>
+            <div class="career-skills">
+              <span class="skill-tag">Verilog/VHDL</span>
+              <span class="skill-tag">FPGA</span>
+              <span class="skill-tag">RTL Design</span>
+              <span class="skill-tag">STA Analysis</span>
+            </div>
+          </div>
+          <div class="career-path-card">
+            <div class="demand-badge"><i data-lucide="trending-up" style="width: 14px; margin-right: 4px;"></i> Critical
+              Role</div>
+            <h3>Embedded Systems Engineer</h3>
+            <p>Develop low-level software (firmware) that controls hardware devices, from medical instruments to
+              automotive systems.</p>
+            <div class="career-skills">
+              <span class="skill-tag">Embedded C</span>
+              <span class="skill-tag">RTOS</span>
+              <span class="skill-tag">Microcontrollers</span>
+              <span class="skill-tag">Hardware Protocols</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Courses section -->
+        <div class="recommendation-section">
+          <h3>Recommended Courses & Certifications</h3>
+          <ul class="rec-list" id="recCourses">
+            <li class="rec-item">
+              <div class="rec-icon"><i data-lucide="book"></i></div>
+              <div class="rec-info">
+                <h4>The Complete Web Developer Bootcamp</h4>
+                <p>Udemy · Beginner to Advanced · 60+ hours</p>
+              </div>
+              <a class="rec-link" href="https://www.udemy.com" target="_blank">View →</a>
+            </li>
+            <li class="rec-item">
+              <div class="rec-icon"><i data-lucide="award"></i></div>
+              <div class="rec-info">
+                <h4>Google Data Analytics Certificate</h4>
+                <p>Coursera · Professional Certificate · ~6 months</p>
+              </div>
+              <a class="rec-link" href="https://www.coursera.org" target="_blank">View →</a>
+            </li>
+            <li class="rec-item">
+              <div class="rec-icon"><i data-lucide="file-text"></i></div>
+              <div class="rec-info">
+                <h4>freeCodeCamp Responsive Web Design</h4>
+                <p>freeCodeCamp · Free · ~300 hours</p>
+              </div>
+              <a class="rec-link" href="https://www.freecodecamp.org" target="_blank">View →</a>
+            </li>
+            <li class="rec-item">
+              <div class="rec-icon"><i data-lucide="zap"></i></div>
+              <div class="rec-info">
+                <h4>Mastering Microcontroller with Embedded C</h4>
+                <p>Udemy · Intermediate · 30+ hours</p>
+              </div>
+              <a class="rec-link" href="https://www.udemy.com" target="_blank">View →</a>
+            </li>
+            <li class="rec-item">
+              <div class="rec-icon"><i data-lucide="building"></i></div>
+              <div class="rec-info">
+                <h4>VLSI Academy — Physical Design Flow</h4>
+                <p>NPTEL / Coursera · Professional · ~4 months</p>
+              </div>
+              <a class="rec-link" href="https://www.coursera.org" target="_blank">View →</a>
+            </li>
+            <li class="rec-item">
+              <div class="rec-icon"><i data-lucide="rss"></i></div>
+              <div class="rec-info">
+                <h4>Introduction to IoT & Digital Transformation</h4>
+                <p>Cisco Networking Academy · Free · ~20 hours</p>
+              </div>
+              <a class="rec-link" href="https://www.netacad.com" target="_blank">View →</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Projects section -->
+        <div class="recommendation-section">
+          <h3>Project Ideas</h3>
+          <ul class="rec-list">
+            <li class="rec-item">
+              <div class="rec-icon"><i data-lucide="globe"></i></div>
+              <div class="rec-info">
+                <h4>Personal Portfolio Website</h4>
+                <p>Build a responsive portfolio to showcase your skills and projects. Great for interviews.</p>
+              </div>
+            </li>
+            <li class="rec-item">
+              <div class="rec-icon"><i data-lucide="clipboard"></i></div>
+              <div class="rec-info">
+                <h4>Task Management App</h4>
+                <p>Create a full-stack to-do app with user authentication, CRUD operations, and a clean UI.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Internships section -->
+        <div class="recommendation-section">
+          <h3>Internship Opportunities</h3>
+          <ul class="rec-list">
+            <li class="rec-item">
+              <div class="rec-icon"><i data-lucide="briefcase"></i></div>
+              <div class="rec-info">
+                <h4>Frontend Development Intern</h4>
+                <p>Look for internships at startups or mid-sized companies. Apply via LinkedIn, Internshala, or
+                  AngelList.</p>
+              </div>
+              <a class="rec-link" href="https://internshala.com" target="_blank">Search →</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Sequential Navigation -->
+        <div class="page-step-nav"
+          style="display: flex; justify-content: flex-start; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-light);">
+          <button class="btn-secondary"
+            style="width: auto; height: auto; padding: 12px 24px; display: flex; align-items: center; gap: 8px;"
+            onclick="navigateTo('dashboard')"><i data-lucide="arrow-left" style="width: 18px;"></i> Back to
+            Dashboard</button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ========== AI CHATBOT ========== -->
+    <button class="chatbot-toggle" id="chatToggle" onclick="toggleChat()" aria-label="Open AI Mentor"><i data-lucide="message-circle"></i></button>
+
+    <div class="chatbot-window" id="chatWindow">
+      <div class="chatbot-header">
+        <div class="chatbot-header-info">
+          <div class="chatbot-avatar"><i data-lucide="bot"></i></div>
+          <div>
+            <h4>AI Mentor</h4>
+            <p>Always here to help</p>
+          </div>
+        </div>
+        <button class="chatbot-close" onclick="toggleChat()" aria-label="Close chat">✕</button>
+      </div>
+      <div class="chatbot-messages" id="chatMessages">
+        <!-- Messages rendered by JS -->
+      </div>
+      <div class="chat-suggestions" id="chatSuggestions">
+        <button class="chat-suggestion" onclick="sendSuggestion('Explain loops in Python')">Explain loops</button>
+        <button class="chat-suggestion" onclick="sendSuggestion('I feel stuck, what should I do?')">I feel
+          stuck</button>
+        <button class="chat-suggestion" onclick="sendSuggestion('Give me a coding tip')">Coding tip</button>
+      </div>
+      <div class="chatbot-input">
+        <input type="text" id="chatInput" placeholder="Type your question..." onkeydown="handleChatKey(event)" />
+        <button onclick="sendChatMessage()" aria-label="Send message" id="chatSendBtn">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({ pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script src="js/lang-search.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Initialize Lucide icons
+    setTimeout(() => { if (window.lucide) window.lucide.createIcons(); }, 100);
+  </script>
+  <script src="js/chat.js"></script>
+  <script src="js/assessment.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+
+</html>
